@@ -1,0 +1,14 @@
+.custom-search-bar {
+    height: 3rem; /* Set a fixed height for the search bar */
+    width: 63rem;
+}
+
+.logo {
+    height: 2.5rem;
+}
+
+.active-link {
+    background-color: #198754;
+    color: #fff; 
+}
+  

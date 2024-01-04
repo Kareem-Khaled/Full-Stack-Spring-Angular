@@ -1,0 +1,11 @@
+#footer {
+    flex-shrink: 0;
+    text-align: center;
+    padding: 50px;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }

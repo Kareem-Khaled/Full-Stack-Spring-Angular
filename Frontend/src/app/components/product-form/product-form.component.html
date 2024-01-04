@@ -1,0 +1,71 @@
+<div class="container">
+  <div class="row d-flex justify-content-center">
+    <div class="col col-9">
+      <h1 class="h2 text-center">{{'Add New Product' | translate}}</h1>
+        <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group mt-3">
+                <label class="form-label h6">Product Name</label>
+                <input type="text" class="form-control"  formControlName="nameEn" placeholder="Product Name">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group mt-3">
+                <label class="form-label h6">اسم المنتج</label>
+                <input type="text" class="form-control" formControlName="nameAr" placeholder="اسم المنتج">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group mt-3">
+                <label class="form-label h6">{{'Category' | translate}}</label>
+                <select class="form-control" formControlName="category">
+                  <option *ngFor="let category of productCategories" value="{{category.id}}">{{category.name}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group mt-3">
+                <label class="form-label h6">{{'Image Path' | translate}}</label>
+                <input type="text" class="form-control" formControlName="imageUrl" placeholder="{{'Image Path' | translate}}">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group mt-3">
+                <label class="form-label h6">{{'Price' | translate}}</label>
+                <input type="number" class="form-control" formControlName="price" min="1">
+              </div>
+            </div>
+          <div class="col-6">
+            <div class="form-group mt-3">
+              <label class="form-label h6">{{'Quantity' | translate}}</label>
+              <input type="number" class="form-control" formControlName="quantity" min="1">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group mt-3">
+              <label class="form-label h6">Description</label>
+              <textarea cols="5" rows="5" class="form-control" formControlName="descriptionEn" placeholder="More details about the product...">
+              </textarea>
+            </div>
+          </div>
+          
+          <div class="col-6">
+            <div class="form-group mt-3">
+              <label class="form-label h6">وصف المنتج</label>
+              <textarea cols="5" rows="5" class="form-control" formControlName="descriptionAr" placeholder="مزيد من التفاصيل حول المنتج...">
+              </textarea>
+            </div>
+          </div>
+        </div>
+        
+        <div class="d-flex justify-content-center my-3">
+          <button type="submit" class="btn btn-primary mt-3" [disabled]="!productForm.valid"
+          style="width: 20rem;">{{'Add Product' | translate}}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

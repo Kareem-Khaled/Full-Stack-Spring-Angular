@@ -1,0 +1,54 @@
+<div class="container">
+    <div class="row d-flex justify-content-center">
+      <div class="col col-7">
+        <!-- <h1 class="h2 text-center">{{'Add New Product' | translate}}</h1> -->
+        <div>
+          <img src="/assets/images/logo.png"  style="max-width: 5rem; max-height: 5rem;">
+          <span style="font-size: 1.5rem;">{{'member' | translate}}</span>
+        </div>
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group mt-3">
+                  <label class="form-label h6">{{'Email' | translate}}</label>
+                  <input type="text" class="form-control" formControlName="email" placeholder="{{'Email' | translate}}">
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group mt-3">
+                  <label class="form-label h6">{{'First Name' | translate}}</label>
+                  <input type="text" class="form-control" formControlName="firstName" placeholder="{{'First Name' | translate}}">
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group mt-3">
+                  <label class="form-label h6">{{'Last Name' | translate}}</label>
+                  <input type="text" class="form-control" formControlName="lastName" placeholder="{{'Last Name' | translate}}">
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group mt-3">
+                  <label class="form-label h6">{{'Password' | translate}}</label>
+                  <input type="text" class="form-control" formControlName="password" placeholder="{{'Password' | translate}}">
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group mt-3">
+                  <label class="form-label h6">{{'Confirm Password' | translate}}</label>
+                  <input type="text" class="form-control" formControlName="confirmPassword" placeholder="{{'Confirm Password' | translate}}">
+                </div>
+              </div>
+              <div class="d-flex justify-content-center my-3">
+                <button type="submit" class="btn btn-success mt-3" [disabled]="!registerForm.valid"
+                style="width: 15rem;">{{'Register' | translate}}</button>
+              </div>
+              <div class="d-flex justify-content-center">
+                <a routerLink="/login" class="link-primary" style="cursor: pointer;">
+                  {{'registered' | translate}}
+                </a>  
+              </div>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>

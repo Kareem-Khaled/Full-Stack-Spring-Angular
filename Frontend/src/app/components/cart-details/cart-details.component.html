@@ -1,0 +1,32 @@
+<div class="container mb-5">
+    <div class="d-flex justify-content-center row">
+        <div class="col-md-9">
+            <div class="row p-2 bg-white border rounded shadow-sm my-3" *ngFor="let cartItem of cartItems">
+                <div class="col-md-2 mt-1">
+                    <img class="img-fluid img-responsive rounded" src="{{cartItem.product.imageUrl}}">
+                </div>
+                <div class="col-md-6 mt-1">
+                    <h2 class="display-6">{{cartItem.product.name}}</h2>
+                    <p class="lead">{{cartItem.product.description}}</p>
+                </div>
+                <div class="align-items-center align-content-center col-md-3 border-left mt-1">
+                    <div class="d-flex flex-row align-items-center">
+                        <h4 class="price mr-1">{{ cartItem.product.price | currency: 'USD' }}</h4>
+                    </div>
+                    <h6 class="text-success">{{'Free shipping' | translate}}</h6>
+                    <div class="d-flex flex-column mt-4">
+                        <input class="form-control text-center" type="num" value="{{cartItem.quantity}}" disabled />
+                        <button routerLink="/products/{{cartItem.product.id}}" class="btn btn-outline-success mt-2 btn-sm" type="button">Details</button>
+                        <button (click)="deleteCartItem(cartItem)" class="btn btn-outline-danger btn-sm mt-2" type="button">Delete</button>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="!cartItems.length">
+                <div class="col-9 h5 text-center mx-auto alert alert-success">
+                    {{'No products in your cart' | translate}} 
+                    <a href="/products">{{'Start shopping' | translate}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

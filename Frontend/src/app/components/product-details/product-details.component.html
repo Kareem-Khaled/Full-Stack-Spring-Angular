@@ -1,0 +1,24 @@
+<div class="container px-4 px-lg-5 my-5">
+    <div class="row gx-4 gx-lg-5 align-items-center">
+        <div class="col-md-4 mx-auto">
+            <img class="card-img-top" src="{{product.imageUrl}}" />
+        </div>
+        <div class="col-md-6">
+            <div class="small mb-1">{{'Updated at' | translate}}: {{product.lastUpdated | date: 'dd/MM/yyyy' }}</div>
+            <h1 class="display-5 fw-bolder">{{product.name}}</h1>
+            <div class="fs-5 mb-3">
+                <div>{{'In stock' | translate}}: {{product.quantity}}</div>
+                <div class="price">{{ +product.price | currency: 'USD' }}</div>
+            </div>
+            <p class="lead">{{product.description}}</p>
+            <div class="d-flex">
+                <input class="form-control text-center mx-3" type="number" [(ngModel)] = "quantity" min="1" max="{{product.quantity}}" 
+                style="max-width: 8rem" />
+                <button (click)="addToCart(product)" class="btn btn-outline-success" type="button">
+                    <i class="fas fa-shopping-cart"></i>
+                    {{'Add to cart' | translate}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

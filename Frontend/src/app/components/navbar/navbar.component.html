@@ -1,0 +1,72 @@
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+          <a routerLink="/products" class="navbar-brand">
+              <img src="/assets/images/logo.png" class="logo me-2">
+              <span>{{'store' | translate}}</span>
+            </a>
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+              <!-- <li class="nav-item">
+                  <a href="#" class="nav-link">Login</a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">Sign Up</a>
+            </li> -->
+                <li class="nav-item me-2" [hidden]="!auth.isLoggedIn()">
+                        <div routerLink="/add" class="btn btn-outline-primary">
+                        <i class="fa fa-plus"></i>
+                        {{'Add Product' | translate}}
+                    </div>
+                </li>
+                <li class="nav-item" [hidden]="!auth.isLoggedIn()">
+                    <app-cart-status></app-cart-status>
+                </li>
+                <li class="nav-item" >
+                    <app-translate></app-translate>
+                </li>
+                <li class="nav-item mx-1"
+                (click)="logout()"
+                [hidden]="!auth.isLoggedIn()">
+                    <div class="btn btn-danger">
+                        <i class="fa fa-sign-out"></i>
+                        {{'Logout' | translate}}
+                    </div>
+                </li>
+          </ul>
+      </div>
+  </nav>
+  <nav class="navbar navbar-expand-lg mb-3 navbar-light bg-light" 
+    [hidden]="!auth.isLoggedIn()">
+    <div class="container-fluid">
+        <ul class="navbar-nav mb-2 mb-lg-0">
+            <li class="nav-item" >
+                <a routerLink="/products" routerLinkActive="active-link" class="nav-link">{{'All' | translate}}</a>
+            </li>
+            <li class="nav-item" *ngFor="let category of productCategory">
+                <a routerLink="/category/{{ category.id }}" 
+                routerLinkActive="active-link"
+                class="nav-link">{{ category.name }}</a>
+            </li>
+            <!-- <li>
+                <a href="#" class="btn btn-primary mx-auto">
+                    <i class="fas fa-shopping-cart cart-icon me-2"></i>
+                    <span class="me-3">3</span> 
+                    Cart - $120.50
+                </a>
+            </li> -->
+        </ul>
+    </div>
+</nav>
+
+<div class="d-flex mb-4 justify-content-center">
+    <div class="input-group custom-search-bar" [hidden]="!auth.isLoggedIn()">
+        <input #searchInput type="text" class="form-control" 
+        placeholder="{{'Search about product' | translate}}"
+        (keyup.enter)="doSearch(searchInput.value)">
+        
+        <button (click)="doSearch(searchInput.value)"
+            type="submit" class="btn btn-success custom-search-btn">
+            <i class="fas fa-search"></i>
+        </button>
+    </div>
+</div>
