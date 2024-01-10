@@ -5,6 +5,7 @@ import { Product } from '../../shared/product';
 import { ProductCategory } from '../../shared/product-category';
 import { Language } from '../../shared/language';
 import { MyTranslateService } from '../translate/my-translate.service';
+import { ProductResponse } from '../../shared/productsResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -13,71 +14,42 @@ import { MyTranslateService } from '../translate/my-translate.service';
 export class ProductService {
   private productsUrl = 'http://localhost:8080/api/products';
   private productCategoryUrl = 'http://localhost:8080/api/productCategories';
-  private language: Language = new Language('en', 'ltr');
+  private currentProduct: Product | null = null;
+  // private language: Language = new Language('en', 'ltr');
   constructor(private http: HttpClient,
               private translate: MyTranslateService) { }
 
-  getProducts(): Observable<Product[]> {
-    this.language = this.translate.getLanguage();
-    return this.http.get<Product[]>(this.productsUrl).pipe(map((data: any) => 
-    data._embedded.products.map((product: Product) => {
-      return {
-        ...product,
-        name: product.name[this.language.code],
-        description: product.description[this.language.code]
-      }
-    })));
+  getProducts(page: number, size: number): Observable<ProductResponse> {
+    // this.language = this.translate.getLanguage();
+    return this.http.get<ProductResponse>(this.productsUrl + `?page=${page}&size=${size}`);
   }
+
+  // getProducts(): Observable<ProductResponse> {
+  //   // this.language = this.translate.getLanguage();
+  //   return this.http.get<ProductResponse>(this.productsUrl);
+  // }
   
   getproductCategories(): Observable<ProductCategory[]> {
-    this.language = this.translate.getLanguage();
-    console.log(this.language);
+    // this.language = this.translate.getLanguage();
+    // console.log(this.language);
     return this.http.get<ProductCategory[]>(this.productCategoryUrl).pipe(map((data: any) => 
-      data._embedded.productCategories.map((productCategory: ProductCategory) => {
-        return {
-          ...productCategory,
-          name: productCategory.name[this.language.code]
-        }
-      })
+      data._embedded.productCategories
     ));
   }
   
-  getProductsByCategory(currentCategoryId: number): Observable<Product[]> {
-    this.language = this.translate.getLanguage();
-    return this.http.get<Product[]>(this.productsUrl + `/search/findByCategoryId?id=${currentCategoryId}`).pipe(map((data: any) => 
-      data._embedded.products.map((product: Product) => {
-        return {
-          ...product,
-          name: product.name[this.language.code],
-          description: product.description[this.language.code]
-        }
-      })
-    ));
+  getProductsByCategory(currentCategoryId: number, page: number, size: number): Observable<ProductResponse> {
+    // this.language = this.translate.getLanguage();
+    return this.http.get<ProductResponse>(this.productsUrl + `/search/findByCategoryId?id=${currentCategoryId}&page=${page}&size=${size}`);
   }
   
   getProduct(productId: number): Observable<Product> {
-    this.language = this.translate.getLanguage();
-    return this.http.get<Product>(this.productsUrl + `/${productId}`).pipe(map((data: any) => {
-      return {
-        ...data,
-        name: data.name[this.language.code],
-        description: data.description[this.language.code]
-      }
-     }
-    ));
+    // this.language = this.translate.getLanguage();
+    return this.http.get<Product>(this.productsUrl + `/${productId}`);
   }
 
-  searchProducts(keyword: string): Observable<Product[]> {
-    this.language = this.translate.getLanguage();
-    return this.http.get<Product[]>(this.productsUrl + `/search/findByNameContainingIgnoreCase?name=${keyword}`).pipe(map((data: any) => 
-      data._embedded.products.map((product: Product) => {
-        return {
-          ...product,
-          name: product.name[this.language.code],
-          description: product.description[this.language.code]
-        }
-      })
-    ));
+  searchProducts(keyword: string, page: number, size: number): Observable<ProductResponse> {
+    // this.language = this.translate.getLanguage();
+    return this.http.get<ProductResponse>(this.productsUrl + `/search/findByNameContainingIgnoreCase?name=${keyword}&page=${page}&size=${size}`);
   }
   addProduct(productData: any): Observable<Product> {
     productData = {
@@ -92,4 +64,27 @@ export class ProductService {
   deleteProduct(product: Product): Observable<Product> {
     return this.http.delete<Product>(this.productsUrl + `/${product.id}`);
   }
+
+  getUpdatedProduct(): Product | null {
+    return this.currentProduct;
+  }
+
+  setUpdatedProduct(product: Product | null) {
+    this.currentProduct = product;
+  }
+
+  updateProduct(product: Product): Observable<Product> {
+    return this.http.put<Product>(this.productsUrl + `/${product.id}`, product);
+  }
 }
+
+
+// .pipe(map((data: any) => 
+//       data._embedded.products.map((product: Product) => {
+//         return {
+//           ...product,
+//           name: product.name[this.language.code],
+//           description: product.description[this.language.code]
+//         }
+//       })
+//     ));

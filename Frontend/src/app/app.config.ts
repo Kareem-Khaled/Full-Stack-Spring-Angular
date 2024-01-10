@@ -8,11 +8,13 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient } from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { Language } from './shared/language';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
 }
 
+const language = JSON.parse(localStorage.getItem('language')!) || new Language('en', 'ltr');
 export const appConfig: ApplicationConfig = {
   providers: [
               provideRouter(routes), // toaster (notification)
@@ -21,7 +23,7 @@ export const appConfig: ApplicationConfig = {
 
               provideHttpClient(), // translate
               TranslateModule.forRoot({
-                defaultLanguage: 'en',
+                defaultLanguage: language.code,
                 loader: {
                   provide: TranslateLoader,
                   useFactory: HttpLoaderFactory,

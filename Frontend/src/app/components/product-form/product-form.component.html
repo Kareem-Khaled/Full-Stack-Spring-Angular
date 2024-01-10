@@ -1,7 +1,8 @@
 <div class="container">
   <div class="row d-flex justify-content-center">
     <div class="col col-9">
-      <h1 class="h2 text-center">{{'Add New Product' | translate}}</h1>
+      <h1 *ngIf="updateMode === false" class="h2 text-center">{{'Add New Product' | translate}}</h1>
+      <h1 *ngIf="updateMode === true" class="h2 text-center">{{'Update Product' | translate}}</h1>
         <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
           <div class="row">
             <div class="col-6">
@@ -20,7 +21,7 @@
               <div class="form-group mt-3">
                 <label class="form-label h6">{{'Category' | translate}}</label>
                 <select class="form-control" formControlName="category">
-                  <option *ngFor="let category of productCategories" value="{{category.id}}">{{category.name}}</option>
+                  <option *ngFor="let category of productCategories" value="{{category.id}}">{{category.name[translate.getLanguage().code]}}</option>
                 </select>
               </div>
             </div>
@@ -61,10 +62,16 @@
           </div>
         </div>
         
-        <div class="d-flex justify-content-center my-3">
+        <div *ngIf="updateMode === false" class="d-flex justify-content-center my-3">
           <button type="submit" class="btn btn-primary mt-3" [disabled]="!productForm.valid"
           style="width: 20rem;">{{'Add Product' | translate}}</button>
         </div>
+
+        <div *ngIf="updateMode === true" class="d-flex justify-content-center my-3">
+          <button type="submit" class="btn btn-success mt-3" [disabled]="!productForm.valid"
+          style="width: 20rem;">{{'Update Product' | translate}}</button>
+        </div>
+
       </form>
     </div>
   </div>

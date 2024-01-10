@@ -12,10 +12,12 @@ export const routes: Routes = [
     {
         path: 'login', 
         component: LoginFormComponent,
+        canActivate: [AuthGuard]
     },
     {
         path: 'register', 
         component: RegisterFormComponent,
+        canActivate: [AuthGuard]
     },
     {
         path: 'add', 

@@ -5,12 +5,12 @@
         </div>
         <div class="col-md-6">
             <div class="small mb-1">{{'Updated at' | translate}}: {{product.lastUpdated | date: 'dd/MM/yyyy' }}</div>
-            <h1 class="display-5 fw-bolder">{{product.name}}</h1>
+            <h1 class="display-5 fw-bolder">{{product.name?.[translate.getLanguage().code]}}</h1>
             <div class="fs-5 mb-3">
                 <div>{{'In stock' | translate}}: {{product.quantity}}</div>
                 <div class="price">{{ +product.price | currency: 'USD' }}</div>
             </div>
-            <p class="lead">{{product.description}}</p>
+            <p class="lead">{{product.description?.[translate.getLanguage().code]}}</p>
             <div class="d-flex">
                 <input class="form-control text-center mx-3" type="number" [(ngModel)] = "quantity" min="1" max="{{product.quantity}}" 
                 style="max-width: 8rem" />

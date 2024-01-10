@@ -6,14 +6,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -43,13 +48,26 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             System.out.println("token : "+accessToken);
             Claims claims = jwtUtil.resolveClaims(request);
 
-            if(claims != null & jwtUtil.validateClaims(claims)){
+            if (claims != null && jwtUtil.validateClaims(claims)) {
                 String email = claims.getSubject();
-                System.out.println("email : "+email);
-                Authentication authentication =
-                        new UsernamePasswordAuthenticationToken(email,"",new ArrayList<>());
+                System.out.println("email: " + email);
+                System.out.println("Roles:");
+
+                // Extract roles from claims and remove extra brackets
+                String rolesString = claims.get("roles").toString().replaceAll("\\[|\\]", "");
+                
+                // Split roles and create SimpleGrantedAuthority objects
+                Collection<? extends GrantedAuthority> authorities = Arrays.stream(rolesString.split(","))
+                        .map(role -> new SimpleGrantedAuthority(role.trim()))
+                        .collect(Collectors.toList());
+
+                // Create UsernamePasswordAuthenticationToken with proper constructor
+                Authentication authentication = new UsernamePasswordAuthenticationToken(email, "", authorities);
+
+                // Set Authentication in SecurityContextHolder
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
+
 
         }catch (Exception e){
             errorDetails.put("message", "Authentication Error");

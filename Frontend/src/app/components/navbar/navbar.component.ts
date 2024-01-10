@@ -25,15 +25,15 @@ export class NavbarComponent implements OnInit {
   language: Language = new Language('en', 'ltr');
   constructor(private productService: ProductService, 
               private router: Router,
-              private translate: MyTranslateService,
+              public translate: MyTranslateService,
               public auth: AuthService) { }
   ngOnInit() {
     this.getCategories();
-    this.translate.languageSubject.subscribe((language: Language) => {
-      this.language = language;
-      console.log(this.language);
-      this.getCategories();
-    })
+    // this.translate.languageSubject.subscribe((language: Language) => {
+    //   this.language = language;
+    //   console.log(this.language);
+    //   this.getCategories();
+    // })
   }
 
   doSearch(searchInput: string) {

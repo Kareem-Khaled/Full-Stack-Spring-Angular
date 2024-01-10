@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import com.ejada.shoppingCart.auth.JwtUtil;
 import com.ejada.shoppingCart.dao.UserRepository;
@@ -37,13 +38,15 @@ public class AuthController {
         try {
             Authentication authentication =
                     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginReq.getEmail(), loginReq.getPassword()));
+			
             String email = authentication.getName();
-            User user = new User(email,"");
+            User user = userDao.findByEmail(email);
             String token = jwtUtil.createToken(user);
             LoginRes loginRes = new LoginRes(
         		HttpStatus.OK,
             	email,
             	token,
+            	user.getRoles(),
             	"Welcome Back!"
             );
 
@@ -54,12 +57,14 @@ public class AuthController {
             		HttpStatus.NOT_FOUND,
                 	null,
                 	null,
+                	null,
                 	"Invalid username or password"
             );
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(loginRes);
         }catch (Exception e){
             LoginRes loginRes = new LoginRes(
             		HttpStatus.BAD_REQUEST,
+                	null,
                 	null,
                 	null,
                 	"Invalid username or password"
@@ -71,6 +76,15 @@ public class AuthController {
 	@PostMapping("/register")
     public ResponseEntity register(@RequestBody User user)  {
         System.out.println(user);
+        user.getRoles().add("ROLE_USER");
+        user = userDao.save(user);
+    	return ResponseEntity.ok(user);
+    }
+	
+	@PostMapping("/admin-register")
+    public ResponseEntity adminRegister(@RequestBody User user)  {
+        System.out.println(user);
+        user.getRoles().add("ROLE_ADMIN");
         user = userDao.save(user);
     	return ResponseEntity.ok(user);
     }

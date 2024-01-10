@@ -23,13 +23,13 @@ export class ProductDetailsComponent implements OnInit {
   constructor(private productService: ProductService, 
               private route: ActivatedRoute, 
               private cartService: CartService,
-              private translate: MyTranslateService) { }
+              public translate: MyTranslateService) { }
 
   ngOnInit(): void {
-    this.translate.languageSubject.subscribe((language: Language) => {
-      console.log(language);
-      this.handleProductDetails();
-    })
+    // this.translate.languageSubject.subscribe((language: Language) => {
+    //   console.log(language);
+    //   this.handleProductDetails();
+    // })
     this.route.paramMap.subscribe(() => {
       this.handleProductDetails();
     })
@@ -44,6 +44,7 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   addToCart(product: Product) {
+    console.log(product);
     const cartItem = { product, quantity: +this.quantity };
     this.cartService.addToCart(cartItem);
   }

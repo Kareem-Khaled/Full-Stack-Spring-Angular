@@ -12,13 +12,13 @@
               <li class="nav-item">
                 <a href="#" class="nav-link">Sign Up</a>
             </li> -->
-                <li class="nav-item me-2" [hidden]="!auth.isLoggedIn()">
+                <li class="nav-item me-2" [hidden]="!auth.isLoggedIn() || !auth.isAdmin()">
                         <div routerLink="/add" class="btn btn-outline-primary">
                         <i class="fa fa-plus"></i>
                         {{'Add Product' | translate}}
                     </div>
                 </li>
-                <li class="nav-item" [hidden]="!auth.isLoggedIn()">
+                <li class="nav-item" [hidden]="!auth.isLoggedIn() || auth.isAdmin()">
                     <app-cart-status></app-cart-status>
                 </li>
                 <li class="nav-item" >
@@ -45,7 +45,7 @@
             <li class="nav-item" *ngFor="let category of productCategory">
                 <a routerLink="/category/{{ category.id }}" 
                 routerLinkActive="active-link"
-                class="nav-link">{{ category.name }}</a>
+                class="nav-link">{{ category.name[translate.getLanguage().code] }}</a>
             </li>
             <!-- <li>
                 <a href="#" class="btn btn-primary mx-auto">

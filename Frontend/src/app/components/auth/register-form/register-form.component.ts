@@ -22,7 +22,7 @@ export class RegisterFormComponent {
     private auth: AuthService) {
 
       this.registerForm = this.fb.group({
-        email:['', Validators.required],
+        email:['', [Validators.required, Validators.email]],
         password:['', Validators.required],
         confirmPassword:['', Validators.required],
         firstName:['', Validators.required],

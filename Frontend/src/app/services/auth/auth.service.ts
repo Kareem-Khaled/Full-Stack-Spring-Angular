@@ -4,6 +4,8 @@ import { User } from '../../shared/user';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { loginResponse } from '../../shared/login-response';
+import { loginRequest } from '../../shared/login-request';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +14,7 @@ export class AuthService {
 
   private baseUrl = 'http://localhost:8080';
   private authTokenKey = 'authToken';
+  private rolesKey = 'roles';
 
   constructor(private http: HttpClient,
               private router: Router,
@@ -25,10 +28,11 @@ export class AuthService {
     );
   }
 
-  login(user: User): boolean {
-    this.http.post<User>(`${this.baseUrl}/auth/login`, user).subscribe(
-      (data: User) => {
-        this.setAuthToken(data.token!);
+  login(user: loginRequest): boolean {
+    this.http.post<loginResponse>(`${this.baseUrl}/auth/login`, user).subscribe(
+      (data: loginResponse) => {
+        this.setAuthToken(data.token);
+        this.setRoles(data.roles);
         this.router.navigate(['/']);
         this.toastr.success(data.message, 'Login successful');
         return true;
@@ -48,12 +52,28 @@ export class AuthService {
     localStorage.setItem(this.authTokenKey, token);
   }
 
+  setRoles(roles: string[]) {
+    localStorage.setItem(this.rolesKey, roles.toString());
+  }
+
   getToken() {
     return localStorage.getItem(this.authTokenKey);
   }
 
+  getRoles() {
+    return localStorage.getItem(this.rolesKey);
+  }
+
+  isAdmin(){
+    return this.getRoles() === 'ROLE_ADMIN';
+  }
+
   logout(): void {
-    localStorage.removeItem(this.authTokenKey);
+    const language = localStorage.getItem('language');
+    localStorage.clear();
+    if(language){
+      localStorage.setItem('language', language);
+    }
     this.router.navigate(['/login']);
     this.toastr.success('See you soon!', 'Goodbye!');
   }

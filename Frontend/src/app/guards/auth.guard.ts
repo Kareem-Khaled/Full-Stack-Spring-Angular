@@ -1,6 +1,6 @@
 // auth.guard.ts
 import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 import { AuthService } from '../services/auth/auth.service';
 import { ToastrService } from 'ngx-toastr';
 
@@ -12,7 +12,16 @@ export class AuthGuard implements CanActivate {
               private router: Router,
               private toastr: ToastrService) {}
 
-  canActivate(): boolean {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    if (state.url == '/login' || state.url == '/register') {
+      if(this.authService.isLoggedIn()){
+        this.router.navigate(['/']);
+        this.toastr.info('Logout first to access this page!', 'Already Logged In');
+        return false;
+      }
+      return true;
+    }
+    
     if (this.authService.isLoggedIn()) {
       return true;
     } else {

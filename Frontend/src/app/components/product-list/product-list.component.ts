@@ -2,19 +2,21 @@ import { Component, OnInit } from '@angular/core';
 import { Product } from '../../shared/product';
 import { ProductService } from '../../services/product/product.service';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CartService } from '../../services/cart/cart.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { MyTranslateService } from '../../services/translate/my-translate.service';
-import { Language } from '../../shared/language';
 import { LoadingComponent } from '../loading/loading.component';
 import { ToastrService } from 'ngx-toastr';
 import { CartItem } from '../../shared/cart-item';
+import { ProductResponse } from '../../shared/productsResponse';
+import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, TranslateModule, LoadingComponent],
+  imports: [CommonModule, RouterLink, TranslateModule, LoadingComponent, NgbPaginationModule],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css',
 })
@@ -23,20 +25,27 @@ export class ProductListComponent implements OnInit {
 
   products: Product[] = [];
   currentCategoryId: string = '*';
+  previousCategoryId: string = '*';
+  previousKeyword: string = '';
 
   constructor(private productService: ProductService, 
               private route : ActivatedRoute, 
               private cartService: CartService,
-              private translate: MyTranslateService,
-              private toastr: ToastrService) { }
+              public translate: MyTranslateService,
+              private toastr: ToastrService,
+              private router: Router,
+              public auth: AuthService) { }
   
   isLoading: boolean = true
+  pageNumber: number = 1
+  pageSize: number = 8
+  totalElements: number = 0
 
   ngOnInit() {
-    this.translate.languageSubject.subscribe((language: Language) => {
-      this.isLoading = true;  
-      this.listProducts();
-    })
+    // this.translate.languageSubject.subscribe((language: Language) => {
+    //   this.isLoading = true;  
+    //   this.listProducts();
+    // })
     this.route.paramMap.subscribe(() => {
       this.isLoading = true;
       this.listProducts();
@@ -46,15 +55,24 @@ export class ProductListComponent implements OnInit {
   listProducts() {
     if(this.route.snapshot.paramMap.has('keyword')) {
       const keyword: string = this.route.snapshot.paramMap.get('keyword') || '';
-      this.productService.searchProducts(keyword).subscribe((data: Product[]) => this.handleData(data));
+      if(this.previousKeyword !== keyword) {
+        this.pageNumber = 1;
+      }
+      this.previousKeyword = keyword;
+      this.productService.searchProducts(keyword, this.pageNumber - 1, this.pageSize).subscribe((data: ProductResponse) => this.handleData(data));
     }
     else{
       this.currentCategoryId = this.route.snapshot.paramMap.get('categoryId') || 'all';
+      if(this.previousCategoryId !== this.currentCategoryId) {
+        this.pageNumber = 1;
+      }
+      this.previousCategoryId = this.currentCategoryId;
       if (this.currentCategoryId === 'all') {
-        this.productService.getProducts().subscribe((data: Product[]) => this.handleData(data));
+        this.productService.getProducts(this.pageNumber - 1, this.pageSize).subscribe((data: ProductResponse) => this.handleData(data));
+        // this.productService.getProductsPaginated(this.pageNumber - 1, this.pageSize).subscribe((data: ProductResponse) => this.handleData(data));
       }
       else {
-        this.productService.getProductsByCategory(+this.currentCategoryId).subscribe((data: Product[]) => this.handleData(data));
+        this.productService.getProductsByCategory(+this.currentCategoryId, this.pageNumber - 1, this.pageSize).subscribe((data: ProductResponse) => this.handleData(data));
       }
       
     }
@@ -65,10 +83,13 @@ export class ProductListComponent implements OnInit {
     this.cartService.addToCart(cartItem);
   }
 
-  handleData(data: Product[]) {
+  handleData(data: ProductResponse) {
     console.log(data);
-    this.products = data;
+    this.products = data._embedded.products;
     this.isLoading = false;
+    this.totalElements = data.page.totalElements;
+    this.pageNumber = data.page.number + 1;
+    this.pageSize = data.page.size;
   }
 
   deleteProduct(product: Product) {
@@ -84,5 +105,16 @@ export class ProductListComponent implements OnInit {
     if (result) {
       this.deleteProduct(product);
     }
+  }
+
+  updatePageSize(event: any) {
+    this.isLoading = true;
+    this.pageSize = event.value;
+    this.listProducts();
+  }
+
+  updateProduct(product: Product) {
+    this.productService.setUpdatedProduct(product);
+    this.router.navigate(['/update']);
   }
 }

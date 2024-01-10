@@ -30,5 +30,7 @@
     "not registered": "Don't have an account yet? Register now!",
     "registered": "Already have an account? Login now!",
     "member" : "Become A Member Of Our Family",
-    "footer": "Powered by Ejada Online Store."
+    "footer": "Powered by Ejada Online Store.",
+    "Logout": "Logout",
+    "Update Product": "Update Product"
 }

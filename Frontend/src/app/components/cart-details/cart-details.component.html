@@ -6,8 +6,8 @@
                     <img class="img-fluid img-responsive rounded" src="{{cartItem.product.imageUrl}}">
                 </div>
                 <div class="col-md-6 mt-1">
-                    <h2 class="display-6">{{cartItem.product.name}}</h2>
-                    <p class="lead">{{cartItem.product.description}}</p>
+                    <h2 class="display-6">{{cartItem.product.name[translate.getLanguage().code]}}</h2>
+                    <p class="lead">{{cartItem.product.description[translate.getLanguage().code]}}</p>
                 </div>
                 <div class="align-items-center align-content-center col-md-3 border-left mt-1">
                     <div class="d-flex flex-row align-items-center">
@@ -21,6 +21,19 @@
                     </div>
                 </div>
             </div>
+
+            <div class="row p-2 bg-white border rounded shadow-sm my-5" [hidden]="!cartItems.length">
+                <div class="col-md-9 mt-1">
+                    <h2 class="h3">Total price: 
+                        <span class="price">{{ cartService.totalPrice| currency: 'USD'}}</span>
+                    </h2>
+                </div>
+                <span class="col-md-3 mt-1" >
+                    <a class="btn btn-success" style="min-width: 13rem;">{{'Checkout' | translate}}</a>
+                </span>
+            </div>
+
+
             <div *ngIf="!cartItems.length">
                 <div class="col-9 h5 text-center mx-auto alert alert-success">
                     {{'No products in your cart' | translate}} 

@@ -25,14 +25,14 @@ import { FooterComponent } from './components/footer/footer.component';
 export class AppComponent implements OnInit {
   title = 'Shopping Cart App';
   textDir = 'ltr';
-  constructor(private translate: MyTranslateService,
+  constructor(public translate: MyTranslateService,
               public auth: AuthService) {}
 
   ngOnInit() {
     // this.translate.use('en');
-    this.translate.languageSubject.subscribe((language: Language) => {
-      this.textDir = language.dir;
-    })
+    // this.translate.languageSubject.subscribe((language: Language) => {
+    //   this.textDir = language.dir;
+    // })
   }
   
 }

@@ -2,6 +2,7 @@ package com.ejada.shoppingCart.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +12,7 @@ import com.ejada.shoppingCart.dao.ProductCategoryRepository;
 import com.ejada.shoppingCart.dao.ProductRepository;
 import com.ejada.shoppingCart.entity.Product;
 import com.ejada.shoppingCart.entity.ProductCategory;
+import org.springframework.security.core.Authentication;
 
 @RestController
 @RequestMapping("${spring.data.rest.base-path}/products")
@@ -24,6 +26,7 @@ public class ProductController {
     private ProductCategoryRepository ProductCategoryDao;
 
     @PostMapping("/add")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Product> saveProduct(@RequestBody Product product) {
     	long categoryId = product.getCategory().getId();
         ProductCategory category = ProductCategoryDao.getReferenceById(categoryId);

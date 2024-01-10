@@ -9,17 +9,22 @@
                     </a>
                     <ul class="product-links">
                         <li style="cursor: pointer;">
+                            <a (click)="updateProduct(product)" [hidden]="!auth.isAdmin()">
+                                <i class="fa fa-pen"></i>
+                            </a>
+                        </li>
+                        <li style="cursor: pointer;" [hidden]="auth.isAdmin()">
                             <a (click)="addToCart(product)">
                                 <i class="fa fa-shopping-cart"></i>
                             </a>
                         </li>
                         <!-- <li><a href="#"><i class="fa fa-random"></i></a></li> -->
-                        <!-- <li>
+                        <li style="cursor: pointer;" [hidden]="auth.isAdmin()">
                             <a routerLink="/products/{{ product.id }}">
                                 <i class="fa fa-search"></i>
                             </a>
-                        </li> -->
-                        <li style="cursor: pointer;">
+                        </li>
+                        <li style="cursor: pointer;" [hidden]="!auth.isAdmin()">
                             <a (click)="confirmDelete(product)">
                                 <i class="fa fa-times"></i>
                             </a>
@@ -34,7 +39,7 @@
                         <li class="fa fa-star"></li>
                         <li class="far fa-star"></li>
                     </ul> -->
-                    <h3 class="title"><a routerLink="/products/{{ product.id }}">{{ product.name }}</a></h3>
+                    <h3 class="title"><a routerLink="/products/{{ product.id }}">{{ product.name[translate.getLanguage().code] }}</a></h3>
                     <div class="price">{{ +product.price | currency: 'USD' }}</div>
                 </div>
             </div>
@@ -49,4 +54,22 @@
             <app-loading></app-loading>
         </div>
     </div>
+
+    
+    <div class="d-flex justify-content-end align-items-center mt-5"
+         *ngIf="products.length">
+        <ngb-pagination [(page)]="pageNumber"
+                        [pageSize]="pageSize" 
+                        [collectionSize]="totalElements"
+                        [maxSize]="3"
+                        [boundaryLinks]="true"
+                        (pageChange)="listProducts()"></ngb-pagination>
+            <select class="mb-3 mx-3 form-select" style="max-width: 4.5rem;"
+            (change)="updatePageSize($event.target)">
+                <option selected="true">8</option>
+                <option>12</option>
+                <option>16</option>
+                <option>20</option>
+            </select>
+    </div>    
 </div>

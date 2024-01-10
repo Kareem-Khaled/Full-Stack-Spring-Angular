@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { User } from '../../../shared/user';
 import { AuthService } from '../../../services/auth/auth.service';
 import { RouterLink } from '@angular/router';
+import { loginRequest } from '../../../shared/login-request';
 
 @Component({
   selector: 'app-login-form',
@@ -32,7 +33,7 @@ export class LoginFormComponent {
     onSubmit() {
       if (this.loginForm.valid) {
         const userData = this.loginForm.value;
-        let user = new User(0, userData.email, userData.password);
+        let user = new loginRequest(userData.email, userData.password);
         console.log(user);
         if(this.auth.login(user)){
           this.loginForm.reset();

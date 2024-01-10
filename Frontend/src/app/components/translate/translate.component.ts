@@ -13,16 +13,20 @@ import { TranslateModule } from '@ngx-translate/core';
 export class TranslateComponent implements OnInit {
 
   constructor(private translate: MyTranslateService) { }
-  language = new Language('en', 'ltr');
+  // language = new Language('en', 'ltr');
 
   ngOnInit() {
-    this.translate.languageSubject.subscribe((language: Language) => {
-      this.language = language;
-    })
+    // this.translate.languageSubject.subscribe((language: Language) => {
+    //   this.language = language;
+    // })
   }
   toggleLanguage() {
-    this.language = this.language.code === 'en' ? new Language('ar', 'rtl') : new Language('en', 'ltr');
-    this.translate.use(this.language);
+    this.translate.toggleLanguage();
+    // if (this.language.code === 'en') {
+    //   this.language = new Language('ar', 'rtl');
+    // } else {
+    //   this.language = new Language('en', 'ltr');
+    // }
   }
 
 }
