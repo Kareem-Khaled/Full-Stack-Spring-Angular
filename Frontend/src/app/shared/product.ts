@@ -8,17 +8,17 @@ export class Product {
     };
     price: number;
     quantity: number;
-    dateCreated: Date;
+    // dateCreated: Date;
     lastUpdated: Date;
     imageUrl: string;
 
-    constructor(id: number, name: any, description: any, price: number, quantity: number, dateCreated: Date, lastUpdated: Date, imageUrl: string) {
+    constructor(id: number, name: any, description: any, price: number, quantity: number, lastUpdated: Date, imageUrl: string) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.quantity = quantity;
-        this.dateCreated = dateCreated;
+        // this.dateCreated = dateCreated;
         this.lastUpdated = lastUpdated;
         this.imageUrl = imageUrl;
     }

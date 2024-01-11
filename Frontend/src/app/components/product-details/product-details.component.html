@@ -1,7 +1,7 @@
 <div class="container px-4 px-lg-5 my-5">
     <div class="row gx-4 gx-lg-5 align-items-center">
         <div class="col-md-4 mx-auto">
-            <img class="card-img-top" src="{{product.imageUrl}}" />
+            <img class="card-img-top" src="{{product.imageUrl}}" appImageError/>
         </div>
         <div class="col-md-6">
             <div class="small mb-1">{{'Updated at' | translate}}: {{product.lastUpdated | date: 'dd/MM/yyyy' }}</div>
@@ -11,7 +11,7 @@
                 <div class="price">{{ +product.price | currency: 'USD' }}</div>
             </div>
             <p class="lead">{{product.description?.[translate.getLanguage().code]}}</p>
-            <div class="d-flex">
+            <div class="d-flex" *ngIf="!auth.isAdmin()">
                 <input class="form-control text-center mx-3" type="number" [(ngModel)] = "quantity" min="1" max="{{product.quantity}}" 
                 style="max-width: 8rem" />
                 <button (click)="addToCart(product)" class="btn btn-outline-success" type="button">

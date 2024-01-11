@@ -62,14 +62,14 @@ export class CartService {
   }
 
   getCartItems(): CartItem[] {
-    if(this.cartItems.length === 0) {
       this.cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+      this.totalQuantity = 0;
+      this.totalPrice = 0;
       this.cartItems.forEach(item => {
         this.totalPrice += item.product.price * item.quantity;
         this.totalQuantity += item.quantity;
       })
       // this.totalQuantitySubject.next(this.totalQuantity);
-    }
-    return this.cartItems;
+      return this.cartItems;
   }
 }

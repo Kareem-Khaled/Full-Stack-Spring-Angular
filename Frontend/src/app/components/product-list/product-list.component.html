@@ -4,8 +4,8 @@
             <div class="product-grid">
                 <div class="product-image">
                     <a routerLink="/products/{{ product.id }}" class="image">
-                        <img class="pic-1" src="{{ product.imageUrl }}">
-                        <img class="pic-2" src="{{ product.imageUrl }}">
+                        <img class="pic-1" [src]="product.imageUrl" appImageError>
+                        <img class="pic-2" src="{{ product.imageUrl }}" appImageError>
                     </a>
                     <ul class="product-links">
                         <li style="cursor: pointer;">

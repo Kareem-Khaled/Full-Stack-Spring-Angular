@@ -45,6 +45,7 @@ public class AuthController {
             LoginRes loginRes = new LoginRes(
         		HttpStatus.OK,
             	email,
+            	user.getFirstName() + " " + user.getLastName(),
             	token,
             	user.getRoles(),
             	"Welcome Back!"
@@ -58,12 +59,14 @@ public class AuthController {
                 	null,
                 	null,
                 	null,
+                	null,
                 	"Invalid username or password"
             );
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(loginRes);
         }catch (Exception e){
             LoginRes loginRes = new LoginRes(
             		HttpStatus.BAD_REQUEST,
+                	null,
                 	null,
                 	null,
                 	null,

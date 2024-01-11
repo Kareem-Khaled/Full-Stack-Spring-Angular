@@ -58,7 +58,12 @@ export class ProductService {
         id: productData.category
       }
     }
+    console.log(productData);
     return this.http.post<Product>(this.productsUrl + `/add`, productData);
+  }
+
+  getProductCategory(id: number): Observable<ProductCategory> {
+    return this.http.get<ProductCategory>(this.productsUrl + `/${id}` + `/category`);
   }
 
   deleteProduct(product: Product): Observable<Product> {

@@ -30,7 +30,7 @@ public class ProductController {
     public ResponseEntity<Product> saveProduct(@RequestBody Product product) {
     	long categoryId = product.getCategory().getId();
         ProductCategory category = ProductCategoryDao.getReferenceById(categoryId);
-        category.getProducts().add(product);        
+        category.getProducts().add(product);
         productDao.save(product);
         return ResponseEntity.ok(product);
     }

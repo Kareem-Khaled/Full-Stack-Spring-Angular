@@ -24,13 +24,18 @@ export class ProductFormComponent implements OnInit {
   ngOnInit() {
     this.getCategories();
     this.currentProduct = this.productService.getUpdatedProduct();
-    if(this.currentProduct) {
+    if(this.currentProduct) { // update
       this.updateMode = true;
       this.productForm.patchValue(this.currentProduct);
       this.productForm.patchValue({nameEn: this.currentProduct.name['en']});
       this.productForm.patchValue({nameAr: this.currentProduct.name['ar']});
       this.productForm.patchValue({descriptionEn: this.currentProduct.description['en']});
       this.productForm.patchValue({descriptionAr: this.currentProduct.description['ar']});
+      this.productService.getProductCategory(this.currentProduct.id).subscribe(
+        (category: ProductCategory) => {
+          this.productForm.patchValue({category: category.id});
+        }
+      )
     }
     else{
       this.resetForm();
@@ -67,7 +72,7 @@ export class ProductFormComponent implements OnInit {
     if (this.productForm.valid) {
       const productData = this.formatFormData(this.productForm.value);
       console.log(productData);
-      if(productData.id) {
+      if(productData.id) { // update
         delete productData.category;
         this.productService.updateProduct(productData).subscribe((data: Product) => {
             console.log(data);

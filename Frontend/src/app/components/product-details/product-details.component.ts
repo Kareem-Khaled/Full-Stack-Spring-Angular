@@ -8,11 +8,13 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MyTranslateService } from '../../services/translate/my-translate.service';
 import { Language } from '../../shared/language';
+import { ImageErrorDirective } from '../../directives/image-error.directive';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule, ImageErrorDirective],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.css'
 })
@@ -23,7 +25,8 @@ export class ProductDetailsComponent implements OnInit {
   constructor(private productService: ProductService, 
               private route: ActivatedRoute, 
               private cartService: CartService,
-              public translate: MyTranslateService) { }
+              public translate: MyTranslateService,
+              public auth: AuthService) { }
 
   ngOnInit(): void {
     // this.translate.languageSubject.subscribe((language: Language) => {

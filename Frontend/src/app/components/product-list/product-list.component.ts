@@ -12,11 +12,13 @@ import { CartItem } from '../../shared/cart-item';
 import { ProductResponse } from '../../shared/productsResponse';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../../services/auth/auth.service';
+import { ImageErrorDirective } from '../../directives/image-error.directive';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, TranslateModule, LoadingComponent, NgbPaginationModule],
+  imports: [CommonModule, RouterLink, TranslateModule, LoadingComponent, NgbPaginationModule,
+    ImageErrorDirective],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css',
 })
@@ -46,6 +48,7 @@ export class ProductListComponent implements OnInit {
     //   this.isLoading = true;  
     //   this.listProducts();
     // })
+    this.cartService.getCartItems();
     this.route.paramMap.subscribe(() => {
       this.isLoading = true;
       this.listProducts();
@@ -85,8 +88,8 @@ export class ProductListComponent implements OnInit {
 
   handleData(data: ProductResponse) {
     console.log(data);
-    this.products = data._embedded.products;
     this.isLoading = false;
+    this.products = data._embedded.products;
     this.totalElements = data.page.totalElements;
     this.pageNumber = data.page.number + 1;
     this.pageSize = data.page.size;

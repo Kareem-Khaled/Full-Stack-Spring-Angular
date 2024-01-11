@@ -13,8 +13,7 @@ import { loginRequest } from '../../shared/login-request';
 export class AuthService {
 
   private baseUrl = 'http://localhost:8080';
-  private authTokenKey = 'authToken';
-  private rolesKey = 'roles';
+  private userKey = 'user';
 
   constructor(private http: HttpClient,
               private router: Router,
@@ -31,8 +30,7 @@ export class AuthService {
   login(user: loginRequest): boolean {
     this.http.post<loginResponse>(`${this.baseUrl}/auth/login`, user).subscribe(
       (data: loginResponse) => {
-        this.setAuthToken(data.token);
-        this.setRoles(data.roles);
+        this.setUser(data);
         this.router.navigate(['/']);
         this.toastr.success(data.message, 'Login successful');
         return true;
@@ -45,27 +43,31 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem(this.authTokenKey);
+    return !!localStorage.getItem(this.userKey);
   }
 
-  setAuthToken(token: string): void {
-    localStorage.setItem(this.authTokenKey, token);
-  }
-
-  setRoles(roles: string[]) {
-    localStorage.setItem(this.rolesKey, roles.toString());
+  setUser(data: loginResponse) {
+    localStorage.setItem(this.userKey, JSON.stringify(data));
   }
 
   getToken() {
-    return localStorage.getItem(this.authTokenKey);
+    const userData = JSON.parse(localStorage.getItem(this.userKey)!);
+    return userData.token;
   }
 
   getRoles() {
-    return localStorage.getItem(this.rolesKey);
+    const userData = JSON.parse(localStorage.getItem(this.userKey)!);
+    return userData.roles;
+  }
+
+  getUsername() {
+    if(!this.isLoggedIn()) return '';
+    const userData = JSON.parse(localStorage.getItem(this.userKey)!);
+    return userData.username;
   }
 
   isAdmin(){
-    return this.getRoles() === 'ROLE_ADMIN';
+    return this.getRoles().includes('ROLE_ADMIN');
   }
 
   logout(): void {

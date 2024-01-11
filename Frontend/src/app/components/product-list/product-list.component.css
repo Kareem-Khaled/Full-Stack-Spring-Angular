@@ -11,6 +11,8 @@
     overflow: hidden;
     position: relative;
     transition: all 0.3s ease 0s;
+    /* min-height: 20rem; */
+    /* max-height: 13rem; */
 }
 .product-grid:hover .product-image{ border-radius: 0 0 30px 30px; }
 .product-grid .product-image a.image{ display: block; }

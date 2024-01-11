@@ -5,13 +5,33 @@
               <img src="/assets/images/logo.png" class="logo me-2">
               <span>{{'store' | translate}}</span>
             </a>
+            <div class="d-flex justify-content-center custom-search-bar">
+                <div class="input-group" [hidden]="!auth.isLoggedIn()">
+                    <input #searchInput type="text" class="form-control" 
+                    placeholder="{{'Search about product' | translate}}"
+                    (keyup.enter)="doSearch(searchInput.value)">
+                    
+                    <button (click)="doSearch(searchInput.value)"
+                        type="submit" class="btn btn-success custom-search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            
+
               <!-- <li class="nav-item">
                   <a href="#" class="nav-link">Login</a>
               </li>
               <li class="nav-item">
                 <a href="#" class="nav-link">Sign Up</a>
             </li> -->
+                <li class="nav-item me-2" [hidden]="!auth.isLoggedIn()">
+                    <div class="btn btn-light">
+                    <i class="fa fa-user"></i>
+                        {{auth.getUsername() || 'Guest' | translate}}
+                    </div>
+                </li>
                 <li class="nav-item me-2" [hidden]="!auth.isLoggedIn() || !auth.isAdmin()">
                         <div routerLink="/add" class="btn btn-outline-primary">
                         <i class="fa fa-plus"></i>
@@ -58,7 +78,7 @@
     </div>
 </nav>
 
-<div class="d-flex mb-4 justify-content-center">
+<!-- <div class="d-flex mb-4 justify-content-center">
     <div class="input-group custom-search-bar" [hidden]="!auth.isLoggedIn()">
         <input #searchInput type="text" class="form-control" 
         placeholder="{{'Search about product' | translate}}"
@@ -69,4 +89,4 @@
             <i class="fas fa-search"></i>
         </button>
     </div>
-</div>
+</div> -->

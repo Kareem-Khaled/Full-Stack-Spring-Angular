@@ -12,6 +12,7 @@ import lombok.Data;
 public class LoginRes {
 	private HttpStatus status;
 	private String email;
+	private String username;
     private String token;
     private List<String>Roles;
 	private String message;

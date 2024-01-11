@@ -23,6 +23,7 @@ export class NavbarComponent implements OnInit {
 
   productCategory: ProductCategory[] = [];
   language: Language = new Language('en', 'ltr');
+
   constructor(private productService: ProductService, 
               private router: Router,
               public translate: MyTranslateService,
@@ -43,6 +44,7 @@ export class NavbarComponent implements OnInit {
   }
  
   getCategories() {
+    if(!this.auth.isLoggedIn()) return;
     this.productService.getproductCategories().subscribe((data: ProductCategory[]) => {
       console.log(data);
       this.productCategory = data;

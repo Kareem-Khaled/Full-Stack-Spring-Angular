@@ -53,18 +53,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 System.out.println("email: " + email);
                 System.out.println("Roles:");
 
-                // Extract roles from claims and remove extra brackets
                 String rolesString = claims.get("roles").toString().replaceAll("\\[|\\]", "");
-                
-                // Split roles and create SimpleGrantedAuthority objects
-                Collection<? extends GrantedAuthority> authorities = Arrays.stream(rolesString.split(","))
+
+                //? extends GrantedAuthority
+                Collection<GrantedAuthority> authorities = Arrays.stream(rolesString.split(","))
                         .map(role -> new SimpleGrantedAuthority(role.trim()))
                         .collect(Collectors.toList());
-
-                // Create UsernamePasswordAuthenticationToken with proper constructor
+                
                 Authentication authentication = new UsernamePasswordAuthenticationToken(email, "", authorities);
 
-                // Set Authentication in SecurityContextHolder
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
 
