@@ -6,18 +6,18 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CartService } from '../../services/cart/cart.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { MyTranslateService } from '../../services/translate/my-translate.service';
-import { LoadingComponent } from '../loading/loading.component';
 import { ToastrService } from 'ngx-toastr';
 import { CartItem } from '../../shared/cart-item';
 import { ProductResponse } from '../../shared/productsResponse';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../../services/auth/auth.service';
 import { ImageErrorDirective } from '../../directives/image-error.directive';
+import { LoadingService } from '../../services/loading/loading.service';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, TranslateModule, LoadingComponent, NgbPaginationModule,
+  imports: [CommonModule, RouterLink, TranslateModule, NgbPaginationModule,
     ImageErrorDirective],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css',
@@ -36,9 +36,9 @@ export class ProductListComponent implements OnInit {
               public translate: MyTranslateService,
               private toastr: ToastrService,
               private router: Router,
-              public auth: AuthService) { }
+              public auth: AuthService,
+              public loading: LoadingService) { }
   
-  isLoading: boolean = true
   pageNumber: number = 1
   pageSize: number = 8
   totalElements: number = 0
@@ -49,10 +49,13 @@ export class ProductListComponent implements OnInit {
     //   this.listProducts();
     // })
     this.cartService.getCartItems();
+
     this.route.paramMap.subscribe(() => {
-      this.isLoading = true;
+      this.loading.isLoading.next(true);
       this.listProducts();
     })
+
+   
   }
 
   listProducts() {
@@ -62,7 +65,9 @@ export class ProductListComponent implements OnInit {
         this.pageNumber = 1;
       }
       this.previousKeyword = keyword;
-      this.productService.searchProducts(keyword, this.pageNumber - 1, this.pageSize).subscribe((data: ProductResponse) => this.handleData(data));
+      this.productService.searchProducts(keyword, this.pageNumber - 1, this.pageSize).subscribe(
+        (data: ProductResponse) => this.handleData(data), 
+        (err) => this.handleError(err));
     }
     else{
       this.currentCategoryId = this.route.snapshot.paramMap.get('categoryId') || 'all';
@@ -71,11 +76,15 @@ export class ProductListComponent implements OnInit {
       }
       this.previousCategoryId = this.currentCategoryId;
       if (this.currentCategoryId === 'all') {
-        this.productService.getProducts(this.pageNumber - 1, this.pageSize).subscribe((data: ProductResponse) => this.handleData(data));
+        this.productService.getProducts(this.pageNumber - 1, this.pageSize).subscribe(
+          (data: ProductResponse) => this.handleData(data), 
+          (err) => this.handleError(err));
         // this.productService.getProductsPaginated(this.pageNumber - 1, this.pageSize).subscribe((data: ProductResponse) => this.handleData(data));
       }
       else {
-        this.productService.getProductsByCategory(+this.currentCategoryId, this.pageNumber - 1, this.pageSize).subscribe((data: ProductResponse) => this.handleData(data));
+        this.productService.getProductsByCategory(+this.currentCategoryId, this.pageNumber - 1, this.pageSize).subscribe(
+          (data: ProductResponse) => this.handleData(data), 
+          (err) => this.handleError(err));
       }
       
     }
@@ -87,33 +96,38 @@ export class ProductListComponent implements OnInit {
   }
 
   handleData(data: ProductResponse) {
-    console.log(data);
-    this.isLoading = false;
     this.products = data._embedded.products;
     this.totalElements = data.page.totalElements;
     this.pageNumber = data.page.number + 1;
     this.pageSize = data.page.size;
+    this.loading.isLoading.next(false);
+  }
+
+  handleError(err: any): void {
+    console.log(err);
+    // this.isLoading = false;
+    this.toastr.error("You can't view products", 'Error');
   }
 
   deleteProduct(product: Product) {
     this.productService.deleteProduct(product).subscribe(() => {
       this.listProducts();
-      this.cartService.deleteCartItem(new CartItem(product));
+      // this.cartService.deleteCartItem(new CartItem(product));
       this.toastr.success('Product deleted successfully', 'Success');
     })
   }
 
   confirmDelete(product: Product): void {
-    const result = window.confirm(`Are you sure you want to delete ${product.name}?`);
+    const result = window.confirm(`Are you sure you want to delete ${product.name[this.translate.getLanguage().code]}?`);
     if (result) {
       this.deleteProduct(product);
     }
   }
 
   updatePageSize(event: any) {
-    this.isLoading = true;
     this.pageSize = event.value;
     this.listProducts();
+    this.loading.isLoading.next(true);
   }
 
   updateProduct(product: Product) {

@@ -11,6 +11,7 @@ export class ImageErrorDirective {
   constructor(private img: ElementRef) {}
 
   @HostListener('error') onError() {
+    console.log('Error on image');
     this.img.nativeElement.src = this.DEFAULT_IMAGE_URL;
   }
   

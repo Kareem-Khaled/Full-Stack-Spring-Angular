@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { loginResponse } from '../../shared/login-response';
 import { loginRequest } from '../../shared/login-request';
+import { jwtDecode } from 'jwt-decode';
+import { MyToken } from '../../shared/token';
 
 @Injectable({
   providedIn: 'root'
@@ -13,16 +15,24 @@ import { loginRequest } from '../../shared/login-request';
 export class AuthService {
 
   private baseUrl = 'http://localhost:8080';
-  private userKey = 'user';
+  private tokenKey = 'token';
+  private user: User | null = null;
 
   constructor(private http: HttpClient,
               private router: Router,
-              private toastr: ToastrService) { }
+              private toastr: ToastrService) { 
+              
+      if(this.isLoggedIn()) {
+          this.setUserFromToken();
+      }
+  }
 
   register(user: User): void {
     this.http.post<User>(`${this.baseUrl}/auth/register`, user).subscribe((data: User) => {
         this.router.navigate(['/', 'login']);
         this.toastr.success("Hello in our community", 'Registration successful');
+      }, (error) => {
+        this.toastr.error(error.error.message, 'Registration failed');
       }
     );
   }
@@ -30,7 +40,9 @@ export class AuthService {
   login(user: loginRequest): boolean {
     this.http.post<loginResponse>(`${this.baseUrl}/auth/login`, user).subscribe(
       (data: loginResponse) => {
-        this.setUser(data);
+        this.setToken(data.token);
+        this.setUserFromToken();
+        console.log(this.user);
         this.router.navigate(['/']);
         this.toastr.success(data.message, 'Login successful');
         return true;
@@ -42,36 +54,39 @@ export class AuthService {
     return false;
   }
 
+  setUserFromToken() {
+    const token = this.getToken();
+    const decodedToken: MyToken = jwtDecode(token);
+    this.user = new User(decodedToken.id, decodedToken.sub, '', decodedToken.first_name, decodedToken.last_name, decodedToken.roles);
+  }
   isLoggedIn(): boolean {
-    return !!localStorage.getItem(this.userKey);
+    return !!localStorage.getItem(this.tokenKey);
   }
 
-  setUser(data: loginResponse) {
-    localStorage.setItem(this.userKey, JSON.stringify(data));
+  setToken(token: string) {
+    localStorage.setItem(this.tokenKey, token);
   }
 
-  getToken() {
-    const userData = JSON.parse(localStorage.getItem(this.userKey)!);
-    return userData.token;
+  getToken(): string{
+    return localStorage.getItem(this.tokenKey)!;
   }
 
   getRoles() {
-    const userData = JSON.parse(localStorage.getItem(this.userKey)!);
-    return userData.roles;
+    return this.user?.roles;
   }
 
   getUsername() {
-    if(!this.isLoggedIn()) return '';
-    const userData = JSON.parse(localStorage.getItem(this.userKey)!);
-    return userData.username;
+    return this.user?.firstName + ' ' + this.user?.lastName;
   }
 
   isAdmin(){
-    return this.getRoles().includes('ROLE_ADMIN');
+    if(!this.user) return false;
+    return this.user?.roles.includes('ROLE_ADMIN');
   }
 
   logout(): void {
     const language = localStorage.getItem('language');
+    this.user = null;
     localStorage.clear();
     if(language){
       localStorage.setItem('language', language);

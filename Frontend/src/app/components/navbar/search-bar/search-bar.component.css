@@ -1,0 +1,14 @@
+.idel-search {
+    width: 12rem;
+    background-color: whitesmoke;
+    border: none;
+    transition: width 0.4s ease, border 0.4s ease; 
+}
+ 
+.active-search {
+    width: 30rem;
+    border: none;
+    background-color: white;
+    transition: width 0.6s ease, border 0.6s ease;
+}
+  

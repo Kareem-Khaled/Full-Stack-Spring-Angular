@@ -2,21 +2,10 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
           <a routerLink="/products" class="navbar-brand">
-              <img src="/assets/images/logo.png" class="logo me-2">
+              <img src="/assets/images/logo.png" class="logo">
               <span>{{'store' | translate}}</span>
             </a>
-            <div class="d-flex justify-content-center custom-search-bar">
-                <div class="input-group" [hidden]="!auth.isLoggedIn()">
-                    <input #searchInput type="text" class="form-control" 
-                    placeholder="{{'Search about product' | translate}}"
-                    (keyup.enter)="doSearch(searchInput.value)">
-                    
-                    <button (click)="doSearch(searchInput.value)"
-                        type="submit" class="btn btn-success custom-search-btn">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </div>
+            <app-search-bar></app-search-bar>
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
             
 
@@ -26,13 +15,13 @@
               <li class="nav-item">
                 <a href="#" class="nav-link">Sign Up</a>
             </li> -->
-                <li class="nav-item me-2" [hidden]="!auth.isLoggedIn()">
+                <li class="nav-item mx-1" [hidden]="!auth.isLoggedIn()">
                     <div class="btn btn-light">
                     <i class="fa fa-user"></i>
                         {{auth.getUsername() || 'Guest' | translate}}
                     </div>
                 </li>
-                <li class="nav-item me-2" [hidden]="!auth.isLoggedIn() || !auth.isAdmin()">
+                <li class="nav-item" [hidden]="!auth.isLoggedIn() || !auth.isAdmin()">
                         <div routerLink="/add" class="btn btn-outline-primary">
                         <i class="fa fa-plus"></i>
                         {{'Add Product' | translate}}
@@ -41,10 +30,10 @@
                 <li class="nav-item" [hidden]="!auth.isLoggedIn() || auth.isAdmin()">
                     <app-cart-status></app-cart-status>
                 </li>
-                <li class="nav-item" >
+                <li class="nav-item mx-1">
                     <app-translate></app-translate>
                 </li>
-                <li class="nav-item mx-1"
+                <li class="nav-item"
                 (click)="logout()"
                 [hidden]="!auth.isLoggedIn()">
                     <div class="btn btn-danger">
@@ -69,7 +58,7 @@
             </li>
             <!-- <li>
                 <a href="#" class="btn btn-primary mx-auto">
-                    <i class="fas fa-shopping-cart cart-icon me-2"></i>
+                    <i class="fas fa-shopping-cart cart-icon"></i>
                     <span class="me-3">3</span> 
                     Cart - $120.50
                 </a>

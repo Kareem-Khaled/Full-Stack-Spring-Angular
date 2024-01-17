@@ -17,36 +17,13 @@ import { MyTranslateService } from '../../services/translate/my-translate.servic
 })
 export class ProductFormComponent implements OnInit {
   productForm: FormGroup;
-  // product: Product = null!;
   productCategories: ProductCategory[] = [];
-  currentProduct: Product | null = null;
   updateMode = false;
   ngOnInit() {
     this.getCategories();
-    this.currentProduct = this.productService.getUpdatedProduct();
-    if(this.currentProduct) { // update
-      this.updateMode = true;
-      this.productForm.patchValue(this.currentProduct);
-      this.productForm.patchValue({nameEn: this.currentProduct.name['en']});
-      this.productForm.patchValue({nameAr: this.currentProduct.name['ar']});
-      this.productForm.patchValue({descriptionEn: this.currentProduct.description['en']});
-      this.productForm.patchValue({descriptionAr: this.currentProduct.description['ar']});
-      this.productService.getProductCategory(this.currentProduct.id).subscribe(
-        (category: ProductCategory) => {
-          this.productForm.patchValue({category: category.id});
-        }
-      )
-    }
-    else{
-      this.resetForm();
-    }
-    this.productService.setUpdatedProduct(null);
-    // this.translate.languageSubject.subscribe((language: Language) => {
-    //   this.getCategories();
-    // })
-    // if (this.product) {
-    //   this.fillFormWithProductData();
-    // }
+    this.productService.currentProduct.subscribe((product: Product | null) => {
+      this.handleCurrentProduct(product);
+    })
   }
 
   constructor(private fb: FormBuilder, 
@@ -62,7 +39,7 @@ export class ProductFormComponent implements OnInit {
       quantity: [1, [Validators.required, Validators.min(1)]],
       descriptionEn: ['', [Validators.required, Validators.minLength(10)]],
       descriptionAr: ['', [Validators.required, Validators.minLength(10)]],
-      category: [1, Validators.required],
+      categoryId: [1, Validators.required],
       imageUrl: ['/assets/images/default.png']
     });
  
@@ -71,23 +48,12 @@ export class ProductFormComponent implements OnInit {
   onSubmit() {
     if (this.productForm.valid) {
       const productData = this.formatFormData(this.productForm.value);
-      console.log(productData);
-      if(productData.id) { // update
-        delete productData.category;
-        this.productService.updateProduct(productData).subscribe((data: Product) => {
-            console.log(data);
-            this.resetForm();
-            this.toastr.success('Product updated successfully', 'Success');
-            this.updateMode = false;
-        })
-      }
-      else{
-        this.productService.addProduct(productData).subscribe((data: Product) => {
-          console.log(data);
-          this.resetForm();
-          this.toastr.success('Product added successfully', 'Success');
-        })
-      }
+      this.productService.addProduct(productData).subscribe((data: Product) => {
+        this.resetForm();
+        const state = this.updateMode ? 'Updated' : 'added';
+        this.updateMode = false;
+        this.toastr.success(`Product ${state} successfully`, 'Success');
+      })
     }
   }
 
@@ -121,7 +87,7 @@ export class ProductFormComponent implements OnInit {
     this.productForm.reset();
     this.productForm.patchValue({
       id: 0, price:1,
-      quantity: 1, category: 1, 
+      quantity: 1, categoryId: 1, 
       imageUrl: '/assets/images/default.png'
     });
   }
@@ -138,4 +104,19 @@ export class ProductFormComponent implements OnInit {
   //   });
   // }
 
+   handleCurrentProduct(product: Product | null) {
+    if(product) { // update
+      this.updateMode = true;
+      this.productForm.patchValue(product);
+      this.productForm.patchValue({nameEn: product.name['en']});
+      this.productForm.patchValue({nameAr: product.name['ar']});
+      this.productForm.patchValue({descriptionEn: product.description['en']});
+      this.productForm.patchValue({descriptionAr: product.description['ar']});
+      this.productForm.patchValue({categoryId: product.categoryId});
+    }
+    else{
+      this.updateMode = false;
+      this.resetForm();
+    }
+   }
 }

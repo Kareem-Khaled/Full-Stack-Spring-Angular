@@ -22,13 +22,13 @@
                 </div>
             </div>
 
-            <div class="row p-2 bg-white border rounded shadow-sm my-5" [hidden]="!cartItems.length">
+            <div class="row p-2 my-5 border border-success" [hidden]="!cartItems.length">
                 <div class="col-md-9 mt-1">
                     <h2 class="h3">Total price: 
                         <span class="price">{{ cartService.totalPrice| currency: 'USD'}}</span>
                     </h2>
                 </div>
-                <span class="col-md-3 mt-1" >
+                <span class="col-md-3 mt-2" >
                     <a class="btn btn-success" style="min-width: 13rem;">{{'Checkout' | translate}}</a>
                 </span>
             </div>
@@ -37,7 +37,7 @@
             <div *ngIf="!cartItems.length">
                 <div class="col-9 h5 text-center mx-auto alert alert-success">
                     {{'No products in your cart' | translate}} 
-                    <a href="/products">{{'Start shopping' | translate}}</a>
+                    <a routerLink="/products">{{'Start shopping' | translate}}</a>
                 </div>
             </div>
         </div>

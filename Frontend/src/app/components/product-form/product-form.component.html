@@ -20,7 +20,7 @@
             <div class="col-6">
               <div class="form-group mt-3">
                 <label class="form-label h6">{{'Category' | translate}}</label>
-                <select class="form-control" formControlName="category">
+                <select class="form-control" formControlName="categoryId">
                   <option *ngFor="let category of productCategories" value="{{category.id}}">{{category.name[translate.getLanguage().code]}}</option>
                 </select>
               </div>

@@ -12,12 +12,13 @@ import { MyTranslateService } from './services/translate/my-translate.service';
 import { Language } from './shared/language';
 import { AuthService } from './services/auth/auth.service';
 import { FooterComponent } from './components/footer/footer.component';
+import { LoadingComponent } from './components/loading/loading.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [CommonModule, RouterOutlet, HttpClientModule, 
-    ProductListComponent, NavbarComponent, FooterComponent],
+    ProductListComponent, NavbarComponent, FooterComponent, LoadingComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
   providers: [ProductService, CartService, ToastrService],

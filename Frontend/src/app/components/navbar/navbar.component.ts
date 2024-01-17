@@ -3,19 +3,20 @@ import { ProductCategory } from '../../shared/product-category';
 import { ProductService } from '../../services/product/product.service';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { CartStatusComponent } from '../cart-status/cart-status.component';
+import { CartStatusComponent } from './cart-status/cart-status.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { MyTranslateService } from '../../services/translate/my-translate.service';
 import { Language } from '../../shared/language';
 import { TranslateComponent } from '../translate/translate.component';
 import { AuthService } from '../../services/auth/auth.service';
+import { SearchBarComponent } from './search-bar/search-bar.component';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
   imports: [CommonModule, RouterLink, 
             CartStatusComponent, RouterLinkActive, 
-            TranslateModule, TranslateComponent],
+            TranslateModule, TranslateComponent, SearchBarComponent],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })

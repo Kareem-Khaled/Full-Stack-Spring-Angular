@@ -44,14 +44,11 @@
                 </div>
             </div>
         </div>
-        <div *ngIf="!products.length && !isLoading">
+        <div *ngIf="!products.length && !loading.isLoading.getValue()">
             <div class="col-9 h5 text-center mx-auto alert alert-danger">
                 {{'No products found' | translate}} 
                 <i class="fa-regular fa-face-sad-cry"></i>
             </div>
-        </div>
-        <div *ngIf="isLoading">
-            <app-loading></app-loading>
         </div>
     </div>
 

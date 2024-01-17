@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, Subject, map } from 'rxjs';
 import { Product } from '../../shared/product';
 import { ProductCategory } from '../../shared/product-category';
 import { Language } from '../../shared/language';
 import { MyTranslateService } from '../translate/my-translate.service';
 import { ProductResponse } from '../../shared/productsResponse';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -14,10 +15,10 @@ import { ProductResponse } from '../../shared/productsResponse';
 export class ProductService {
   private productsUrl = 'http://localhost:8080/api/products';
   private productCategoryUrl = 'http://localhost:8080/api/productCategories';
-  private currentProduct: Product | null = null;
+  currentProduct = new Subject<Product | null>();
   // private language: Language = new Language('en', 'ltr');
   constructor(private http: HttpClient,
-              private translate: MyTranslateService) { }
+              private router: Router) { }
 
   getProducts(page: number, size: number): Observable<ProductResponse> {
     // this.language = this.translate.getLanguage();
@@ -44,7 +45,7 @@ export class ProductService {
   
   getProduct(productId: number): Observable<Product> {
     // this.language = this.translate.getLanguage();
-    return this.http.get<Product>(this.productsUrl + `/${productId}`);
+    return this.http.get<Product>(this.productsUrl + '/custom' + `/${productId}`);
   }
 
   searchProducts(keyword: string, page: number, size: number): Observable<ProductResponse> {
@@ -59,7 +60,7 @@ export class ProductService {
       }
     }
     console.log(productData);
-    return this.http.post<Product>(this.productsUrl + `/add`, productData);
+    return this.http.post<Product>(this.productsUrl + `/custom`, productData);
   }
 
   getProductCategory(id: number): Observable<ProductCategory> {
@@ -70,12 +71,19 @@ export class ProductService {
     return this.http.delete<Product>(this.productsUrl + `/${product.id}`);
   }
 
-  getUpdatedProduct(): Product | null {
-    return this.currentProduct;
-  }
+  // getUpdatedProduct(): Product | null {
+  //   // return this.currentProduct
+  //   return null;
+  // }
 
   setUpdatedProduct(product: Product | null) {
-    this.currentProduct = product;
+    if(product){
+      this.getProduct(product.id).subscribe(
+        data => this.currentProduct.next(data)
+      )
+    }
+    else
+      this.currentProduct.next(null);
   }
 
   updateProduct(product: Product): Observable<Product> {
